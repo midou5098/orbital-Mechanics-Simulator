@@ -4,17 +4,22 @@
 
 
 int main(void){
-    SDLinit sdl("fuckass orbital",1920,1080);
+    SDLinit sdl("fuckass orbital",1280,720);
+    uinter uic(sdl);
 
     SDL_Event event;
+    int running=true;
     while(running){
         while(SDL_PollEvent(&event)){
             if(event.type==SDL_QUIT){
-                running=false
+                running=false;
             }
         }
-    }
-    return 0
+        sdl.clear();
+        uic.drawbg();
+        sdl.present();
+    };
+    return 0;
 
 
 

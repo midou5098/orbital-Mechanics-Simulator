@@ -13,8 +13,11 @@ class SDLinit{
         SDLinit(const std::string &title,int w,int h);
         ~SDLinit();
         std::string message="";
+        TTF_Font* getfont(){return font;}
         SDL_Renderer* getrender(){return renderer;}
+        void drawtextarea(int x,int y,int w,int h,int r,int g,int b);
         void drawbut(int x,int y,int w,int h,int r,int g,int b,const std::string &text);
+        void drawtext(int x,int y,const std::string &text);
         void clear();
         void present();
 
@@ -23,7 +26,7 @@ SDLinit::SDLinit(const std::string &title,int w,int h):window(nullptr),renderer(
     SDL_Init(SDL_INIT_VIDEO);
     IMG_Init(IMG_INIT_PNG);
     TTF_Init();
-    font=TTF_OpenFont("font.ttf",15);
+    font=TTF_OpenFont("font.ttf",30);
     window=SDL_CreateWindow(title.c_str(),SDL_WINDOWPOS_CENTERED,SDL_WINDOWPOS_CENTERED,w,h,SDL_WINDOW_SHOWN);
     renderer=SDL_CreateRenderer(window,-1,SDL_RENDERER_ACCELERATED);
 }
@@ -42,6 +45,25 @@ void SDLinit::drawbut(int x,int y,int w,int h,int r,int g,int b,const std::strin
     SDL_DestroyTexture(tex);
     
 }
+
+void SDLinit::drawtext(int x,int y,const std::string &text){
+    SDL_Color black = {0,0,0,255};
+    SDL_Surface* surf=TTF_RenderText_Solid(font,text.c_str(),black);
+    int tw = surf->w;
+    int th = surf->h;
+    SDL_Texture* tex=SDL_CreateTextureFromSurface(renderer,surf);
+    SDL_Rect rect={x,y,tw,th};
+    SDL_RenderCopy(renderer,tex,NULL,&rect);
+    SDL_FreeSurface(surf);
+    SDL_DestroyTexture(tex);
+}
+
+
+
+
+
+
+
 
 
 SDLinit::~SDLinit(){
@@ -65,7 +87,13 @@ void SDLinit::present(){
         SDL_RenderPresent(renderer);
     }
 }
-
+void SDLinit::drawtextarea(int x,int y,int w,int h,int r,int g,int b){
+    SDL_SetRenderDrawColor(renderer,r,g,b,255);
+    SDL_Rect rect4={x,y,w,h};
+    SDL_RenderDrawRect(renderer,&rect4);
+    SDL_SetRenderDrawColor(renderer,255,255,255,255);
+    SDL_RenderFillRect(renderer,&rect4);
+}
 class uinter{
     private:
         SDLinit& sdl;
@@ -73,7 +101,7 @@ class uinter{
     public:
         uinter(SDLinit &sdlo);
         ~uinter();
-        void handle(int& mode,SDL_Event event);
+        void handle(int* mode,SDL_Event event);
         void drawplt(int n);
         void layout(int mode);
 
@@ -94,7 +122,13 @@ void uinter::layout(int mode){
         case 1:
             SDL_SetRenderDrawColor(renderer,60,60,60,255);
             SDL_RenderClear(renderer);
-            sdl.drawbut( 540,600 ,200 ,100 ,20 ,150 ,150,"deploy");
+            sdl.drawtext( 110,75 , "planet name :");
+            sdl.drawtextarea( 300, 70, 200, 50, 0, 0, 0);
+            sdl.drawtext( 110,140 , "planet size : ");
+            sdl.drawtextarea( 300, 135, 200, 50, 0, 0, 0);
+            sdl.drawtext( 110,205 , "species names : ");
+            sdl.drawtextarea( 300, 200, 200, 50, 0, 0, 0);
+            sdl.drawbut( 540,600 ,200 ,100 ,150 ,150 ,150,"deploy");
             break;
         case 2:
             SDL_Rect rect={0,0,1280,720};
@@ -103,20 +137,20 @@ void uinter::layout(int mode){
     }
 }
 
-void uinter::handle(int& mode,SDL_Event event){
-    if (mode==1){
+void uinter::handle(int* mode,SDL_Event event){
+    if (*mode==1){
         if (event.type==SDL_MOUSEBUTTONDOWN){
         int x=event.button.x;
         int y=event.button.y;
         if(540<x && x<740 && 600<y && y<700){
-            mode=2;
+            *mode=2;
         }
     }
     }else{
         if(event.type==SDL_KEYDOWN){
             SDL_Keycode key=event.key.keysym.sym;
             if(key==SDLK_ESCAPE){
-                mode=1;
+                *mode=1;
             }
         }
     }

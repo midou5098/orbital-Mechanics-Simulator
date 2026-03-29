@@ -126,7 +126,7 @@ void uinter::layout(int mode){
             sdl.drawtextarea( 300, 70, 200, 50, 0, 0, 0);
             sdl.drawtext( 110,140 , "planet size : ");
             sdl.drawtextarea( 300, 135, 200, 50, 0, 0, 0);
-            sdl.drawtext( 110,205 , "species names : ");
+            sdl.drawtext( 80,205 , "species names : ");
             sdl.drawtextarea( 300, 200, 200, 50, 0, 0, 0);
             sdl.drawbut( 540,600 ,200 ,100 ,150 ,150 ,150,"deploy");
             break;

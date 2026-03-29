@@ -73,6 +73,7 @@ class uinter{
     public:
         uinter(SDLinit &sdlo);
         ~uinter();
+        void handle(int& mode,SDL_Event event);
         void drawplt(int n);
         void layout(int mode);
 
@@ -102,7 +103,24 @@ void uinter::layout(int mode){
     }
 }
 
-
+void uinter::handle(int& mode,SDL_Event event){
+    if (mode==1){
+        if (event.type==SDL_MOUSEBUTTONDOWN){
+        int x=event.button.x;
+        int y=event.button.y;
+        if(540<x && x<740 && 600<y && y<700){
+            mode=2;
+        }
+    }
+    }else{
+        if(event.type==SDL_KEYDOWN){
+            SDL_Keycode key=event.key.keysym.sym;
+            if(key==SDLK_ESCAPE){
+                mode=1;
+            }
+        }
+    }
+}
 
 
 uinter::~uinter(){

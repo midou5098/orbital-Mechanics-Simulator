@@ -6,7 +6,7 @@
 int main(void){
     SDLinit sdl("fuckass orbital",1280,720);
     uinter uic(sdl);
-
+    int mode=1;
     SDL_Event event;
     int running=true;
     while(running){
@@ -16,8 +16,9 @@ int main(void){
             }
         }
         sdl.clear();
-        uic.layout(1);
+        uic.layout(mode);
         sdl.present();
+        uic.handle(&mode,event);
     };
     return 0;
 

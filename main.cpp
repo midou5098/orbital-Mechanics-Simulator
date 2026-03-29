@@ -16,7 +16,7 @@ int main(void){
             }
         }
         sdl.clear();
-        uic.drawbg();
+        uic.layout(1);
         sdl.present();
     };
     return 0;

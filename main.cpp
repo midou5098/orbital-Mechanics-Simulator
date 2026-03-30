@@ -14,11 +14,12 @@ int main(void){
             if(event.type==SDL_QUIT){
                 running=false;
             }
+            uic.handle(&mode,event);
         }
         sdl.clear();
+        
         uic.layout(mode);
         sdl.present();
-        uic.handle(&mode,event);
     };
     return 0;
 

@@ -1,19 +1,24 @@
 #ifndef HEADERS_H
 #define HEADERS_H
 #include <iostream>
+#include <vector>
+#include <string>
 #include <SDL2/SDL.h>
 #include <SDL2/SDL_ttf.h>
 #include <SDL2/SDL_image.h>
 //using 1 for earth
 //2 for mars , 3 for jupiter and 4 for kepler 
-typedef struct{
-    int planet;
+struct planet {
+    int id;
     std::string name;
-    std::species;
-    std::desc;
-     
-}
-class SDLinit{
+    std::string species;
+    int size;
+    int pop;
+    std::string desc;
+    void add(int ide,int sizee,const std::string& namee,const std::string& speciese ,int pope,const std::string& desce){id(ide),size(sizee),name(namee),species(speciese)pop(pope),desc(desce)}
+};
+
+    class SDLinit{
     private:
         SDL_Window* window;
         SDL_Renderer* renderer;
@@ -109,11 +114,15 @@ class uinter{
         int focused=-1;
         SDLinit& sdl;
         SDL_Texture* tex;
+        std::vector<planet> planets;
     public:
         uinter(SDLinit &sdlo);
         ~uinter();
         void handle(int* mode,SDL_Event event);
+        std::vector<planet>& getvect(void){return planets;}
+        void addPlanet(const planet& p) { planets.push_back(p); }
         void drawplt(int n);
+        add(vector)
         void layout(int mode);
 
 };
@@ -122,10 +131,6 @@ uinter::uinter(SDLinit &osdl) : sdl(osdl),tex(nullptr) {
     SDL_Surface *surf=IMG_Load("space.png");
     tex=SDL_CreateTextureFromSurface(renderer,surf);
     SDL_FreeSurface(surf);
-
-
-
-
 }
 void uinter::layout(int mode){
     SDL_Renderer *renderer=sdl.getrender();
@@ -176,6 +181,13 @@ void uinter::handle(int* mode,SDL_Event event){
                 if(event.type==SDL_KEYDOWN){
                     SDL_Keycode key=event.key.keysym.sym;
                     if(key==SDLK_ESCAPE){
+                        if(!s1.empty() and !s2.empty() and !s3.empty()){
+
+                            planet prot(1,800,s1.c_str(),s3.c_str(),std::stoi(s2),1,"nigga");
+                            std::vector<planet> vec=uinter.getvect();
+                            vec.push_back(prot);
+
+                        }
                         *mode=1;
                     }
                     if (key>=32 && key<=126) {  

@@ -15,7 +15,13 @@ struct planet {
     int size;
     int pop;
     std::string desc;
-    void add(int ide,int sizee,const std::string& namee,const std::string& speciese ,int pope,const std::string& desce){id(ide),size(sizee),name(namee),species(speciese)pop(pope),desc(desce)}
+    void add(int ide,int sizee,const std::string& namee,const std::string& speciese ,int pope,const std::string& desce){
+        id=ide;
+        size=sizee;
+        name=namee;
+        species=speciese;
+        pop=pope;
+        desc=desce;}
 };
 
     class SDLinit{
@@ -122,7 +128,6 @@ class uinter{
         std::vector<planet>& getvect(void){return planets;}
         void addPlanet(const planet& p) { planets.push_back(p); }
         void drawplt(int n);
-        add(vector)
         void layout(int mode);
 
 };
@@ -166,6 +171,12 @@ void uinter::handle(int* mode,SDL_Event event){
                 int x=event.button.x;
                 int y=event.button.y;
                 if(540<x && x<740 && 600<y && y<700){
+                    if(!s1.empty() && !s2.empty() && !s3.empty()){
+                            planet prot;
+                            prot.add(1,std::stoi(s2),s1.c_str(),s3.c_str(),1,"nigga");
+                            addPlanet(prot);
+
+                        }
                     *mode=2;
                 }
                 if (300<x && x<500){
@@ -181,13 +192,6 @@ void uinter::handle(int* mode,SDL_Event event){
                 if(event.type==SDL_KEYDOWN){
                     SDL_Keycode key=event.key.keysym.sym;
                     if(key==SDLK_ESCAPE){
-                        if(!s1.empty() and !s2.empty() and !s3.empty()){
-
-                            planet prot(1,800,s1.c_str(),s3.c_str(),std::stoi(s2),1,"nigga");
-                            std::vector<planet> vec=uinter.getvect();
-                            vec.push_back(prot);
-
-                        }
                         *mode=1;
                     }
                     if (key>=32 && key<=126) {  

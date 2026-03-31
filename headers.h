@@ -136,7 +136,7 @@ class uinter{
         void handle(int* mode,SDL_Event event);
         std::vector<planet>& getvect(void){return planets;}
         void addPlanet(const planet& p) { planets.push_back(p); }
-        void animate(int mode);
+        void animate(int mode,SDL_Texture* seleanim,int px,int py);
         void drawplt(int n);
         void layout(int mode);
 
@@ -170,6 +170,7 @@ void uinter::layout(int mode){
             }if(!s3.empty()){
                 sdl.drawtext( 320,210 ,s3.c_str());
             }
+            animate(mofde,anim,400,250);
             break;
         case 2:
             SDL_Rect rect={0,0,1280,720};
@@ -180,10 +181,10 @@ void uinter::layout(int mode){
 
 
 
-void uinter::animate(int mode){
+void uinter::animate(int mode,SDL_Texture* seleanim,int px,int py){
     if (mode==1){
         int W,H;
-        SDL_QueryTexture(anim,NULL,NULL,&W,&H);
+        SDL_QueryTexture(seleanim,NULL,NULL,&W,&H);
         int framewidth=W/6;
         int frameheight=H/6;
         SDL_Rect rect;
@@ -194,8 +195,8 @@ void uinter::animate(int mode){
         rect.x=framex*framewidth;
         rect.y=framey*frameheight;
         SDL_Rect dst;
-        dst.x=1100;
-        dst.y=300;
+        dst.x=px;
+        dst.y=py;
         dst.w=framewidth;
         dst.h=frameheight;
         current_time = SDL_GetTicks();

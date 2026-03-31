@@ -19,7 +19,7 @@ int main(void){
         sdl.clear();
         
         uic.layout(mode);
-        uic.animate(mode);
+        
         sdl.present();
     };
     return 0;

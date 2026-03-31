@@ -93,8 +93,9 @@ SDLinit::~SDLinit(){
         SDL_DestroyRenderer(renderer);
     }
     TTF_Quit();
-    SDL_Quit();
+    
     IMG_Quit();
+    SDL_Quit();
 }
 void SDLinit::clear(){
     if(renderer){
@@ -126,6 +127,7 @@ class uinter{
         int ROWS=6,COLS=6;
         int current_frame=0;
         Uint32 lframe_time;
+        Uint32 current_time;
         double frame_delay=100;
 
     public:
@@ -134,17 +136,17 @@ class uinter{
         void handle(int* mode,SDL_Event event);
         std::vector<planet>& getvect(void){return planets;}
         void addPlanet(const planet& p) { planets.push_back(p); }
-        void anim(int mode);
+        void animate(int mode);
         void drawplt(int n);
         void layout(int mode);
 
 };
-uinter::uinter(SDLinit &osdl) : sdl(osdl),tex(nullptr) {
+uinter::uinter(SDLinit &osdl) : sdl(osdl),tex(nullptr),anim(nullptr) {
     SDL_Renderer *renderer=sdl.getrender();
     SDL_Surface *surf=IMG_Load("space.png");
-    SDL_Surface *anim=IMG_Load("sun.png");
-    anim = SDL_CreateTextureFromSurface(renderer, anim);
-    SDL_FreeSurface(anim);
+    SDL_Surface *anims=IMG_Load("sun.png");
+    anim = SDL_CreateTextureFromSurface(renderer, anims);
+    SDL_FreeSurface(anims);
     tex=SDL_CreateTextureFromSurface(renderer,surf);
     SDL_FreeSurface(surf);
 }
@@ -178,17 +180,17 @@ void uinter::layout(int mode){
 
 
 
-void anim(int mode):
+void uinter::animate(int mode){
     if (mode==1){
         int W,H;
-        SDL_QueryTexture(anim,NULL,NULL,W,H);
-        int framwidth=W/6;
-        int framheight=H/6;
+        SDL_QueryTexture(anim,NULL,NULL,&W,&H);
+        int framewidth=W/6;
+        int frameheight=H/6;
         SDL_Rect rect;
         rect.w=framewidth;
         rect.h=frameheight;
-        int framex=currentframe%6;
-        int framey=currentframe/6;
+        int framex=current_frame%6;
+        int framey=current_frame/6;
         rect.x=framex*framewidth;
         rect.y=framey*frameheight;
         SDL_Rect dst;
@@ -196,14 +198,15 @@ void anim(int mode):
         dst.y=300;
         dst.w=framewidth;
         dst.h=frameheight;
-        if (currentTime > lastTime + frameDelay) {
-            currentFrame = (currentFrame + 1) % 36; 
-            lastTime = currentTime;
+        current_time = SDL_GetTicks();
+        if (current_time > lframe_time + frame_delay) {
+            current_frame = (current_frame + 1) % 36; 
+            lframe_time = current_time;
         }
         SDL_RenderCopy(sdl.getrender(), anim, &rect, &dst);
 
     }
-
+}
 
 
 
@@ -250,7 +253,7 @@ void uinter::handle(int* mode,SDL_Event event){
                 if(540<x && x<740 && 600<y && y<700){
                     if(!s1.empty() && !s2.empty() && !s3.empty()){
                             planet prot;
-                            prot.add(1,std::stoi(s2),s1.c_str(),s3.c_str(),1,"nigga");
+                            prot.add(1,std::stoi(s2),s1,s3,1,"nigga");
                             addPlanet(prot);
 
                         }
@@ -288,6 +291,7 @@ void uinter::handle(int* mode,SDL_Event event){
 
 uinter::~uinter(){
     SDL_DestroyTexture(tex);
+    if (anim) SDL_DestroyTexture(anim);
     }
 
 

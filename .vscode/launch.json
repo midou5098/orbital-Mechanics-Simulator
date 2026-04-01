@@ -8,8 +8,8 @@
       "args": [],
       "stopAtEntry": false,
       "externalConsole": false,
-      "cwd": "/home/bro/-Orbital-Mechanics-Simulator",
-      "program": "/home/bro/-Orbital-Mechanics-Simulator/build/Debug/outDebug",
+      "cwd": "/home/bro/orbital-Mechanics-Simulator",
+      "program": "/home/bro/orbital-Mechanics-Simulator/build/Debug/outDebug",
       "MIMode": "gdb",
       "miDebuggerPath": "gdb",
       "setupCommands": [

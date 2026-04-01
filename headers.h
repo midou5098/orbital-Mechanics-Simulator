@@ -7,7 +7,7 @@
 #include <SDL2/SDL_ttf.h>
 #include <SDL2/SDL_image.h>
 //using 1 for earth
-//2 for mars , 3 for jupiter and 4 for kepler 
+//2 for mars , 3 for jupiter and 4 for ur anus :)
 struct planet {
     int id;
     std::string name;
@@ -122,6 +122,12 @@ class uinter{
         SDLinit& sdl;
         SDL_Texture* tex;
         SDL_Texture* anim;
+        SDL_Texture* venus;
+        SDL_Texture* uranus;
+        SDL_Texture* mars;
+        SDL_Texture* sun;
+        int selectedplt;
+
         
         std::vector<planet> planets;
         int ROWS=6,COLS=6;
@@ -137,6 +143,7 @@ class uinter{
         std::vector<planet>& getvect(void){return planets;}
         void addPlanet(const planet& p) { planets.push_back(p); }
         void animate(int mode,SDL_Texture* seleanim,int px,int py);
+        void checkmouse(int posx,int posy, int x,int y,int w,int h);
         void drawplt(int n);
         void layout(int mode);
 
@@ -144,11 +151,23 @@ class uinter{
 uinter::uinter(SDLinit &osdl) : sdl(osdl),tex(nullptr),anim(nullptr) {
     SDL_Renderer *renderer=sdl.getrender();
     SDL_Surface *surf=IMG_Load("space.png");
-    SDL_Surface *anims=IMG_Load("sun.png");
+    tex = SDL_CreateTextureFromSurface(renderer, surf);
+    SDL_FreeSurface(surf);
+    SDL_Surface *anims=IMG_Load("earth.png");
     anim = SDL_CreateTextureFromSurface(renderer, anims);
     SDL_FreeSurface(anims);
-    tex=SDL_CreateTextureFromSurface(renderer,surf);
-    SDL_FreeSurface(surf);
+    SDL_Surface *venuss=IMG_Load("venus.png");
+    venus = SDL_CreateTextureFromSurface(renderer, venuss);
+    SDL_FreeSurface(venuss);
+    SDL_Surface *marss=IMG_Load("mars.png");
+    mars = SDL_CreateTextureFromSurface(renderer, marss);
+    SDL_FreeSurface(marss);
+    SDL_Surface *uranuss=IMG_Load("saturn.png");
+    uranus = SDL_CreateTextureFromSurface(renderer, uranuss);
+    SDL_FreeSurface(uranuss);
+    SDL_Surface *sunss=IMG_Load("sun.png");
+    sun = SDL_CreateTextureFromSurface(renderer, sunss);
+    SDL_FreeSurface(sunss);
 }
 void uinter::layout(int mode){
     SDL_Renderer *renderer=sdl.getrender();
@@ -170,7 +189,12 @@ void uinter::layout(int mode){
             }if(!s3.empty()){
                 sdl.drawtext( 320,210 ,s3.c_str());
             }
-            animate(mofde,anim,400,250);
+            animate(mode,anim,1090,20);
+            animate(mode,venus,1090,178);
+            animate(mode,uranus,1060,346);
+            animate(mode,mars,1090,514);
+            
+
             break;
         case 2:
             SDL_Rect rect={0,0,1280,720};
@@ -179,7 +203,9 @@ void uinter::layout(int mode){
     }
 }
 
-
+void uinter::checkmouse(int posx,int posy, int x,int y,int w,int h){
+    
+}
 
 void uinter::animate(int mode,SDL_Texture* seleanim,int px,int py){
     if (mode==1){
@@ -197,14 +223,18 @@ void uinter::animate(int mode,SDL_Texture* seleanim,int px,int py){
         SDL_Rect dst;
         dst.x=px;
         dst.y=py;
-        dst.w=framewidth;
-        dst.h=frameheight;
+        dst.w=140;
+        dst.h=140;
+        if(seleanim==uranus){
+            dst.w=200;
+            dst.h=140;
+        }
         current_time = SDL_GetTicks();
         if (current_time > lframe_time + frame_delay) {
             current_frame = (current_frame + 1) % 36; 
             lframe_time = current_time;
         }
-        SDL_RenderCopy(sdl.getrender(), anim, &rect, &dst);
+        SDL_RenderCopy(sdl.getrender(), seleanim, &rect, &dst);
 
     }
 }

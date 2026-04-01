@@ -118,7 +118,7 @@ void SDLinit::drawtextarea(int x,int y,int w,int h,int r,int g,int b){
 class uinter{
     private:
         std::string s1="",s2="",s3="";
-        int focused=-1;
+        int focused=-1,splt=0;
         SDLinit& sdl;
         SDL_Texture* tex;
         SDL_Texture* anim;
@@ -126,7 +126,6 @@ class uinter{
         SDL_Texture* uranus;
         SDL_Texture* mars;
         SDL_Texture* sun;
-        int selectedplt;
 
         
         std::vector<planet> planets;
@@ -143,7 +142,7 @@ class uinter{
         std::vector<planet>& getvect(void){return planets;}
         void addPlanet(const planet& p) { planets.push_back(p); }
         void animate(int mode,SDL_Texture* seleanim,int px,int py);
-        void checkmouse(int posx,int posy, int x,int y,int w,int h);
+        bool checkmouse(int posx,int posy, int x,int y,int w,int h);
         void drawplt(int n);
         void layout(int mode);
 
@@ -189,6 +188,23 @@ void uinter::layout(int mode){
             }if(!s3.empty()){
                 sdl.drawtext( 320,210 ,s3.c_str());
             }
+            switch(splt){
+                case 1:
+                    sdl.drawtext( 300,365 ,"planet : earth");
+                    break;
+                case 2:
+                    sdl.drawtext( 300,365 ,"planet : venus");
+                    break;
+                case 3:
+                    sdl.drawtext( 300,365 ,"planet : saturn");
+                    break;
+                case 4:
+                    sdl.drawtext( 300,365 ,"planet : mars");
+                    break;
+                default:
+                    sdl.drawtext( 300,365 ,"planet : none");
+                    break;
+            }
             animate(mode,anim,1090,20);
             animate(mode,venus,1090,178);
             animate(mode,uranus,1060,346);
@@ -203,8 +219,11 @@ void uinter::layout(int mode){
     }
 }
 
-void uinter::checkmouse(int posx,int posy, int x,int y,int w,int h){
-    
+bool uinter::checkmouse(int posx,int posy, int x,int y,int w,int h){
+    if(x<posx && posx<x+w && y<posy && posy<y+h){
+        return true;
+    }
+    return false;
 }
 
 void uinter::animate(int mode,SDL_Texture* seleanim,int px,int py){
@@ -290,6 +309,10 @@ void uinter::handle(int* mode,SDL_Event event){
                         }
                     *mode=2;
                 }
+                if (checkmouse(x,y,1090,20,140,140)){splt=1;}
+                if (checkmouse(x,y,1090,178,140,140)){splt=2;}
+                if (checkmouse(x,y,1090,346,200,140)){splt=3;}
+                if (checkmouse(x,y,1090,514,140,140)){splt=4;}
                 if (300<x && x<500){
                         if(70<y && y<120){
                             focused=1;

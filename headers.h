@@ -117,6 +117,9 @@ void SDLinit::drawtextarea(int x,int y,int w,int h,int r,int g,int b){
 }
 class uinter{
     private:
+        int t_alpha,t_mode,fade_speed;
+        bool trans=false;// #trans are wasting oxygene
+
         std::string s1="",s2="",s3="",message="";
         int focused=-1,splt=0;
         SDLinit& sdl;
@@ -308,7 +311,9 @@ void uinter::handle(int* mode,SDL_Event event){
                             planet prot;
                             prot.add(splt,std::stoi(s2),s1,s3,1,"nigga");
                             addPlanet(prot);
-                            *mode=2;
+                            t_mode=2;
+                            trans=true;
+                            t_alpha=0
 
                     }else{
                         message="nah u fucked up somehting , press escape if u wanna just go back to space";

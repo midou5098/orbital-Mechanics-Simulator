@@ -17,13 +17,15 @@ struct planet {
     int size;
     int pop;
     std::string desc;
-    void add(int ide,int sizee,const std::string& namee,const std::string& speciese ,int pope,const std::string& desce){
+    float ang;
+    void add(int ide,int sizee,const std::string& namee,const std::string& speciese ,int pope,const std::string& desce,float ange){
         id=ide;
         size=sizee;
         name=namee;
         species=speciese;
         pop=pope;
-        desc=desce;}
+        desc=desce;
+        ang=ange;}
 };
 
     class SDLinit{
@@ -193,7 +195,7 @@ void uinter::layout(int mode){
             SDL_RenderClear(renderer);
             sdl.drawtext( 110,75 ,"planet name :" );
             sdl.drawtextarea( 300, 70, 200, 50, 0, 0, 0);
-            sdl.drawtext( 110,140 , "Orbital Distance : "); // was going to use planet size as input , but it doesnt add anything , so using the semi-major axis 
+            sdl.drawtext( 80,140 , "Orbital Distance : "); // was going to use planet size as input , but it doesnt add anything , so using the semi-major axis 
             sdl.drawtextarea( 300, 135, 200, 50, 0, 0, 0);
             sdl.drawtext( 80,205 , "species names : ");
             sdl.drawtextarea( 300, 200, 200, 50, 0, 0, 0);
@@ -243,8 +245,8 @@ void uinter::layout(int mode){
             
 
             animate(2,sun,515,235);
-            for(const auto& planet : planets){
-                draworbit(planet.id,&a1,planet.size);
+            for(auto& planet : planets){
+                draworbit(planet.id,&planet.ang,planet.size);
             }
             
 
@@ -302,8 +304,8 @@ void uinter::animate(int mode,SDL_Texture* seleanim,int px,int py){
             dst.h=90;
         }
         if(seleanim==uranus){
-            dst.w=200;
-            dst.h=140;
+            dst.w=170;
+            dst.h=110;
         }else if (seleanim==sun){
             dst.w=250;
             dst.h=250;
@@ -318,21 +320,42 @@ void uinter::animate(int mode,SDL_Texture* seleanim,int px,int py){
 }
 
 
-void uinter::draworbit(int  n ,float* angle, int size){
+void uinter::draworbit(int  n ,float* angle, int size){  
+    int sunx=640; //at this point i hitted a wall , i had limited choices for drawing the orbit ,and all are ineffisicent , with a O(n²) at least , so i m addign the sdl gfx library(feels like summoning a boos lol)
+    int suny=360;
+    circleRGBA(sdl.getrender(), sunx, suny, size, 255, 255, 255, 120);
+    int x= sunx + (int)(size*cos(*angle))-45;
+    int y= suny + (int)(size*sin(*angle))-45;
+    
+    *angle+=0.0035f;
+    if(*angle>2*M_PI) *angle-=2*M_PI;
     switch(n){
         case 1:
-            int sunx=640; //at this point i hitted a wall , i had limited choices for drawing the orbit ,and all are ineffisicent , with a O(n²) at least , so i m addign the sdl gfx library(feels like summoning a boos lol)
-            int suny=360;
-            circleRGBA(sdl.getrender(), sunx, suny, size, 255, 255, 255, 120);
-            int x= sunx + (int)(size*cos(*angle))-30;
-            int y= suny + (int)(size*sin(*angle))-30;
             animate(2,anim,x,y);
             *angle+=0.0035f;
-            if(*angle>2*M_PI) *angle-=2*M_PI;
+            break;
+        case 2:
+            animate(2,venus,x,y);
+            *angle+=0.00315f;
+            break;
+        case 3:
+            animate(2,uranus,x-55,y-25);
+            *angle+=0.0031f;
+            break;
+        case 4:
+            animate(2,mars,x,y);
+            *angle+=0.00361f;
+            break;
+        
+        
+        
+        
+        }
+    
+    if(*angle>2*M_PI) *angle-=2*M_PI;
 
 
-
-    }
+    
 }
 
 
@@ -377,7 +400,23 @@ void uinter::handle(int* mode,SDL_Event event){
                 if(300<x && x<500 && 450<y && y<550){
                     if(!s1.empty() && !s2.empty() && !s3.empty()){
                             planet prot;
-                            prot.add(splt,std::stoi(s2),s1,s3,1,"nigga");
+                            switch(planets.size()){
+                                case 0:
+                                    prot.add(splt,std::stoi(s2),s1,s3,1,"nigga",a1);
+                                    break;
+                            
+                                case 1:
+                                    prot.add(splt,std::stoi(s2),s1,s3,1,"nigga",a2);
+                                    break;
+                                case 2:
+                                    prot.add(splt,std::stoi(s2),s1,s3,1,"nigga",a3);
+                                    break;
+                                case 3:
+                                    prot.add(splt,std::stoi(s2),s1,s3,1,"nigga",a4);
+                                    break;
+                            
+                                }
+                            
                             addPlanet(prot);
                             t_mode=2;
                             trans=true;
@@ -406,6 +445,17 @@ void uinter::handle(int* mode,SDL_Event event){
                     SDL_Keycode key=event.key.keysym.sym;
                     if(key==SDLK_ESCAPE){
                         *mode=2;
+                    }
+                    if(key == SDLK_BACKSPACE) {
+                        if(focused == 1 && !s1.empty()) {
+                            s1.pop_back();  // Remove last character
+                        }
+                        else if(focused == 2 && !s2.empty()) {
+                            s2.pop_back();
+                        }
+                        else if(focused == 3 && !s3.empty()) {
+                            s3.pop_back();
+                        }
                     }
                     if (key>=32 && key<=126) {  
                             char c=(char)key;

@@ -6,6 +6,7 @@
 #include <SDL2/SDL.h>
 #include <SDL2/SDL_ttf.h>
 #include <SDL2/SDL_image.h>
+#include <SDL2/SDL2_gfxPrimitives.h>
 //using 1 for earth
 //2 for mars , 3 for jupiter and 4 for ur anus :)
 struct planet {
@@ -146,7 +147,7 @@ class uinter{
         void addPlanet(const planet& p) { planets.push_back(p); }
         void animate(int mode,SDL_Texture* seleanim,int px,int py);
         bool checkmouse(int posx,int posy, int x,int y,int w,int h);
-        void drawplt(int n);
+        void draworbit(int n,int size);
         void layout(int mode);
 
 };
@@ -190,7 +191,7 @@ void uinter::layout(int mode){
             SDL_RenderClear(renderer);
             sdl.drawtext( 110,75 ,"planet name :" );
             sdl.drawtextarea( 300, 70, 200, 50, 0, 0, 0);
-            sdl.drawtext( 110,140 , "planet size : ");
+            sdl.drawtext( 110,140 , "Orbital Distance : "); // was going to use planet size as input , but it doesnt add anything , so using the semi-major axis 
             sdl.drawtextarea( 300, 135, 200, 50, 0, 0, 0);
             sdl.drawtext( 80,205 , "species names : ");
             sdl.drawtextarea( 300, 200, 200, 50, 0, 0, 0);
@@ -222,10 +223,10 @@ void uinter::layout(int mode){
                     sdl.drawtext( 330,365 ,"planet : none");
                     break;
             }
-            animate(mode,anim,1090,20);
-            animate(mode,venus,1090,178);
-            animate(mode,uranus,1060,346);
-            animate(mode,mars,1090,514);
+            animate(1,anim,1090,20);
+            animate(1,venus,1090,178);
+            animate(1,uranus,1060,346);
+            animate(1,mars,1090,514);
             if (trans){
                 SDL_Rect rect={0,0,1280,720};
                 SDL_SetRenderDrawBlendMode(renderer, SDL_BLENDMODE_BLEND);
@@ -237,12 +238,31 @@ void uinter::layout(int mode){
         case 2:
             SDL_Rect rect={0,0,1280,720};
             SDL_RenderCopy(renderer,tex,NULL,&rect);
+            
+
+            animate(2,sun,570,290);
+            draworbit(1,200);
+
+
+
+
             if (trans){
                 SDL_Rect rect={0,0,1280,720};
                 SDL_SetRenderDrawBlendMode(renderer, SDL_BLENDMODE_BLEND);
                 SDL_SetRenderDrawColor(renderer,0,0,0,t_alpha);
                 SDL_RenderFillRect(renderer,&rect);
             }
+
+
+
+
+
+
+
+
+
+
+
             break;
     }
 }
@@ -255,7 +275,6 @@ bool uinter::checkmouse(int posx,int posy, int x,int y,int w,int h){
 }
 
 void uinter::animate(int mode,SDL_Texture* seleanim,int px,int py){
-    if (mode==1){
         int W,H;
         SDL_QueryTexture(seleanim,NULL,NULL,&W,&H);
         int framewidth=W/6;
@@ -270,8 +289,13 @@ void uinter::animate(int mode,SDL_Texture* seleanim,int px,int py){
         SDL_Rect dst;
         dst.x=px;
         dst.y=py;
-        dst.w=140;
-        dst.h=140;
+        if(mode==1){
+            dst.w=140;
+            dst.h=140;
+        }else if (mode==2){
+            dst.w=90;
+            dst.h=90;
+        }
         if(seleanim==uranus){
             dst.w=200;
             dst.h=140;
@@ -283,11 +307,21 @@ void uinter::animate(int mode,SDL_Texture* seleanim,int px,int py){
         }
         SDL_RenderCopy(sdl.getrender(), seleanim, &rect, &dst);
 
-    }
 }
 
 
+void uinter::draworbit(int n , int size){
+    switch(n){
+        case 1:
+            int sunx=640; //at this point i hitted a wall , i had limited choices for drawing the orbit ,and all are ineffisicent , with a O(n²) aat least , so i m addign the sdl gfx library(feels like summoning a boos lol)
+            int suny=360;
+            circleRGBA(sdl.getrender(), sunx, suny, size, 255, 255, 255, 120);
 
+
+
+
+    }
+}
 
 
 
@@ -373,6 +407,14 @@ void uinter::handle(int* mode,SDL_Event event){
                     }
                 }
             }
+    }else if (*mode==2){
+        if(event.type==SDL_KEYDOWN){
+                    SDL_Keycode key=event.key.keysym.sym;
+                    if(key==SDLK_ESCAPE){
+                        t_mode=1;
+                        trans=true;
+                    }
+                }
     }
 }
 

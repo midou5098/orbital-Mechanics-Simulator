@@ -3,6 +3,7 @@
 #include <iostream>
 #include <vector>
 #include <string>
+#include <cmath>
 #include <SDL2/SDL.h>
 #include <SDL2/SDL_ttf.h>
 #include <SDL2/SDL_image.h>
@@ -123,6 +124,7 @@ class uinter{
 
         std::string s1="",s2="",s3="",message="";
         int focused=-1,splt=0;
+        float a1=0,a2=0,a3=0,a4=0;
         SDLinit& sdl;
         SDL_Texture* tex;
         SDL_Texture* anim;
@@ -147,7 +149,7 @@ class uinter{
         void addPlanet(const planet& p) { planets.push_back(p); }
         void animate(int mode,SDL_Texture* seleanim,int px,int py);
         bool checkmouse(int posx,int posy, int x,int y,int w,int h);
-        void draworbit(int n,int size);
+        void draworbit(int n,float* angle,int size);
         void layout(int mode);
 
 };
@@ -241,7 +243,7 @@ void uinter::layout(int mode){
             
 
             animate(2,sun,570,290);
-            draworbit(1,200);
+            draworbit(1,&a1,200);
 
 
 
@@ -310,13 +312,17 @@ void uinter::animate(int mode,SDL_Texture* seleanim,int px,int py){
 }
 
 
-void uinter::draworbit(int n , int size){
+void uinter::draworbit(int  n ,float* angle, int size){
     switch(n){
         case 1:
-            int sunx=640; //at this point i hitted a wall , i had limited choices for drawing the orbit ,and all are ineffisicent , with a O(n²) aat least , so i m addign the sdl gfx library(feels like summoning a boos lol)
+            int sunx=640; //at this point i hitted a wall , i had limited choices for drawing the orbit ,and all are ineffisicent , with a O(n²) at least , so i m addign the sdl gfx library(feels like summoning a boos lol)
             int suny=360;
             circleRGBA(sdl.getrender(), sunx, suny, size, 255, 255, 255, 120);
-
+            int x= sunx + (int)(size*cos(*angle))-30;
+            int y= suny + (int)(size*sin(*angle))-30;
+            animate(2,anim,x,y);
+            *angle+=0.01f;
+            if(*angle>2*M_PI) *angle-=2*M_PI;
 
 
 

@@ -242,8 +242,11 @@ void uinter::layout(int mode){
             SDL_RenderCopy(renderer,tex,NULL,&rect);
             
 
-            animate(2,sun,570,290);
-            draworbit(1,&a1,200);
+            animate(2,sun,515,235);
+            for(const auto& planet : planets){
+                draworbit(planet.id,&a1,planet.size);
+            }
+            
 
 
 
@@ -294,13 +297,16 @@ void uinter::animate(int mode,SDL_Texture* seleanim,int px,int py){
         if(mode==1){
             dst.w=140;
             dst.h=140;
-        }else if (mode==2){
+        }else if (mode==2) {
             dst.w=90;
             dst.h=90;
         }
         if(seleanim==uranus){
             dst.w=200;
             dst.h=140;
+        }else if (seleanim==sun){
+            dst.w=250;
+            dst.h=250;
         }
         current_time = SDL_GetTicks();
         if (current_time > lframe_time + frame_delay) {
@@ -321,7 +327,7 @@ void uinter::draworbit(int  n ,float* angle, int size){
             int x= sunx + (int)(size*cos(*angle))-30;
             int y= suny + (int)(size*sin(*angle))-30;
             animate(2,anim,x,y);
-            *angle+=0.01f;
+            *angle+=0.0035f;
             if(*angle>2*M_PI) *angle-=2*M_PI;
 
 

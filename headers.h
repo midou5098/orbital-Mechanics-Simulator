@@ -117,7 +117,7 @@ void SDLinit::drawtextarea(int x,int y,int w,int h,int r,int g,int b){
 }
 class uinter{
     private:
-        std::string s1="",s2="",s3="";
+        std::string s1="",s2="",s3="",message="";
         int focused=-1,splt=0;
         SDLinit& sdl;
         SDL_Texture* tex;
@@ -180,29 +180,32 @@ void uinter::layout(int mode){
             sdl.drawtextarea( 300, 135, 200, 50, 0, 0, 0);
             sdl.drawtext( 80,205 , "species names : ");
             sdl.drawtextarea( 300, 200, 200, 50, 0, 0, 0);
-            sdl.drawbut( 540,600 ,200 ,100 ,150 ,150 ,150,"deploy");
+            sdl.drawbut( 300,450 ,200 ,100 ,150 ,150 ,150,"deploy");
             if(!s1.empty()){
                 sdl.drawtext( 320,80 ,s1.c_str());
             }if(!s2.empty()){
                 sdl.drawtext( 320,145 ,s2.c_str());
             }if(!s3.empty()){
                 sdl.drawtext( 320,210 ,s3.c_str());
+            }if(!message.empty()){
+                sdl.drawtext( 20,650 ,message.c_str());
             }
+            
             switch(splt){
                 case 1:
-                    sdl.drawtext( 300,365 ,"planet : earth");
+                    sdl.drawtext( 330,365 ,"planet : earth");
                     break;
                 case 2:
-                    sdl.drawtext( 300,365 ,"planet : venus");
+                    sdl.drawtext( 330,365 ,"planet : venus");
                     break;
                 case 3:
-                    sdl.drawtext( 300,365 ,"planet : saturn");
+                    sdl.drawtext( 330,365 ,"planet : saturn");
                     break;
                 case 4:
-                    sdl.drawtext( 300,365 ,"planet : mars");
+                    sdl.drawtext( 330,365 ,"planet : mars");
                     break;
                 default:
-                    sdl.drawtext( 300,365 ,"planet : none");
+                    sdl.drawtext( 330,365 ,"planet : none");
                     break;
             }
             animate(mode,anim,1090,20);
@@ -300,14 +303,17 @@ void uinter::handle(int* mode,SDL_Event event){
             if (event.type==SDL_MOUSEBUTTONDOWN){
                 int x=event.button.x;
                 int y=event.button.y;
-                if(540<x && x<740 && 600<y && y<700){
+                if(300<x && x<500 && 450<y && y<550){
                     if(!s1.empty() && !s2.empty() && !s3.empty()){
                             planet prot;
-                            prot.add(1,std::stoi(s2),s1,s3,1,"nigga");
+                            prot.add(splt,std::stoi(s2),s1,s3,1,"nigga");
                             addPlanet(prot);
+                            *mode=2;
 
-                        }
-                    *mode=2;
+                    }else{
+                        message="nah u fucked up somehting , press escape if u wanna just go back to space";
+                    }
+                    
                 }
                 if (checkmouse(x,y,1090,20,140,140)){splt=1;}
                 if (checkmouse(x,y,1090,178,140,140)){splt=2;}
@@ -326,7 +332,7 @@ void uinter::handle(int* mode,SDL_Event event){
                 if(event.type==SDL_KEYDOWN){
                     SDL_Keycode key=event.key.keysym.sym;
                     if(key==SDLK_ESCAPE){
-                        *mode=1;
+                        *mode=2;
                     }
                     if (key>=32 && key<=126) {  
                             char c=(char)key;
@@ -335,7 +341,7 @@ void uinter::handle(int* mode,SDL_Event event){
                                 c=toupper(c);
                             }
                             if(focused==1 && s1.length()<15) s1+=c;
-                            else if(focused==2 && s2.length()<15) s2+=c;
+                            else if(focused==2 && s2.length()<15 && isdigit(c)) s2+=c;
                             else if(focused==3 && s3.length()<15) s3+=c;
                     }
                 }

@@ -116,9 +116,9 @@ void SDLinit::drawtextarea(int x,int y,int w,int h,int r,int g,int b){
     SDL_RenderFillRect(renderer,&rect4);
 }
 class uinter{
-    private:
+    public:
         int t_alpha,t_mode,fade_speed;
-        bool trans=false;// #trans are wasting oxygene
+        bool out=true,trans=false;// #trans are wasting oxygene
 
         std::string s1="",s2="",s3="",message="";
         int focused=-1,splt=0;
@@ -138,7 +138,7 @@ class uinter{
         Uint32 current_time;
         double frame_delay=100;
 
-    public:
+
         uinter(SDLinit &sdlo);
         ~uinter();
         void handle(int* mode,SDL_Event event);
@@ -170,6 +170,17 @@ uinter::uinter(SDLinit &osdl) : sdl(osdl),tex(nullptr),anim(nullptr) {
     SDL_Surface *sunss=IMG_Load("sun.png");
     sun = SDL_CreateTextureFromSurface(renderer, sunss);
     SDL_FreeSurface(sunss);
+    t_alpha=0;
+    t_mode=2;
+    fade_speed =15;
+
+
+
+
+
+
+
+
 }
 void uinter::layout(int mode){
     SDL_Renderer *renderer=sdl.getrender();
@@ -215,12 +226,23 @@ void uinter::layout(int mode){
             animate(mode,venus,1090,178);
             animate(mode,uranus,1060,346);
             animate(mode,mars,1090,514);
-            
+            if (trans){
+                SDL_Rect rect={0,0,1280,720};
+                SDL_SetRenderDrawBlendMode(renderer, SDL_BLENDMODE_BLEND);
+                SDL_SetRenderDrawColor(renderer,0,0,0,t_alpha);
+                SDL_RenderFillRect(renderer,&rect);
+            }
 
             break;
         case 2:
             SDL_Rect rect={0,0,1280,720};
             SDL_RenderCopy(renderer,tex,NULL,&rect);
+            if (trans){
+                SDL_Rect rect={0,0,1280,720};
+                SDL_SetRenderDrawBlendMode(renderer, SDL_BLENDMODE_BLEND);
+                SDL_SetRenderDrawColor(renderer,0,0,0,t_alpha);
+                SDL_RenderFillRect(renderer,&rect);
+            }
             break;
     }
 }
@@ -313,7 +335,7 @@ void uinter::handle(int* mode,SDL_Event event){
                             addPlanet(prot);
                             t_mode=2;
                             trans=true;
-                            t_alpha=0
+                            t_alpha=0;
 
                     }else{
                         message="nah u fucked up somehting , press escape if u wanna just go back to space";

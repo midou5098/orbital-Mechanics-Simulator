@@ -424,7 +424,7 @@ void uinter::handle(int* mode,SDL_Event event){
                             s1.clear();
                             s2.clear();
                             s3.clear();
-                            splt=-1
+                            splt=-1;
 
                     }else{
                         message="nah u fucked up somehting , press escape if u wanna just go back to space";
